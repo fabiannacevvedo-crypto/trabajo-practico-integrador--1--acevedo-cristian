@@ -1,14 +1,10 @@
+import { matchedData, validationResult } from "express-validator";
 import { UserModel } from "../models/user.model.js";
 
 export const createUser = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
-
-    if (!name) {
-      return res.status(400).json({ message: "El user no debe ser vacio" });
-    }
-
-    const user = await UserModel.create({ name, email, password });
+    const validatedData = matchedData(req);
+    const user = await UserModel.create(validatedData);
     return res.status(201).json(user);
   } catch (error) {
     console.log(error);
