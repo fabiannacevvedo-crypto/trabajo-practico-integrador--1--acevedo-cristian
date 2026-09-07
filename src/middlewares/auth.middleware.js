@@ -1,20 +1,53 @@
-import { verifyToken } from "../helpers/jwt.helper.js";
+﻿import { verifyToken } from "../helpers/jwt.helper.js";
+import { UserModel, ProfileModel } from "../models/index.js";
 
-export const authMiddleware = (req, res, next) => {
+/**
+ * Middleware para autenticar usuarios mediante token JWT almacenado en cookies seguras.
+ */
+export const authMiddleware = async (req, res, next) => {
   try {
-    // Obtener token de la cookie
-    const token = req.cookies["token"];
+    const token = req.cookies?.token;
 
     if (!token) {
-      return res.status(401).json({ message: "No autenticado" });
+      return res.status(401).json({
+        message: "No autenticado. Token de acceso no proporcionado en las cookies",
+      });
     }
-    // Verificar y decodificar token
-    const decoded = verifyToken(token);
 
-    // Almacenar datos del usuario
-    req.datosDelUsuarioLogeado = decoded;
+    let decoded;
+    try {
+      decoded = verifyToken(token);
+    } catch (err) {
+      return res.status(401).json({
+        message: "Token inválido o expirado. Inicie sesión nuevamente",
+      });
+    }
+
+    const user = await UserModel.findByPk(decoded.id, {
+      attributes: { exclude: ["password"] },
+      include: [
+        {
+          model: ProfileModel,
+          as: "profile",
+        },
+      ],
+    });
+
+    if (!user) {
+      return res.status(401).json({
+        message: "Usuario no encontrado o dado de baja",
+      });
+    }
+
+    req.user = user;
+    req.datosDelUsuarioLogeado = user;
     next();
   } catch (error) {
-    res.status(500).json({ message: "Error interno del servidor" });
+    return res.status(500).json({
+      message: "Error interno en la autenticación",
+      error: error.message,
+    });
   }
 };
+
+export default authMiddleware;

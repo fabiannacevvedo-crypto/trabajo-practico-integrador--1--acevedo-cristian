@@ -1,22 +1,24 @@
-import jwt from "jsonwebtoken";
+﻿import jwt from "jsonwebtoken";
 
-// Generar token JWT
+const JWT_SECRET = process.env.JWT_SECRET || "super_secret_jwt_key_blog_2026";
+const JWT_EXPIRES_IN = "24h";
+
+/**
+ * Genera un token JWT firmado.
+ * @param {Object} payload Datos a incluir en el token.
+ * @returns {string} Token generado.
+ */
 export const generateToken = (payload) => {
-  try {
-    return jwt.sign(payload, process.env.JWT_SECRET, {
-      expiresIn: "5h", // Token válido por 1 hora
-      // expiresIn: process.env.JWT_EXPIRES, // Alternativa desde .env
-    });
-  } catch (error) {
-    throw new Error("Error generando el token: " + error.message);
-  }
+  return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
 };
 
-// Verificar token JWT
+/**
+ * Verifica y decodifica un token JWT.
+ * @param {string} token Token a verificar.
+ * @returns {Object} Payload decodificado.
+ */
 export const verifyToken = (token) => {
-  try {
-    return jwt.verify(token, process.env.JWT_SECRET);
-  } catch (error) {
-    throw new Error("Error verificando el token: " + error.message);
-  }
+  return jwt.verify(token, JWT_SECRET);
 };
+
+export default { generateToken, verifyToken };
