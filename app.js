@@ -1,28 +1,39 @@
-import express from "express";
-import { startDB } from "./src/config/data.base.js";
-import { authRouter } from "./src/routes/auth.routes.js";
-import { personRouter } from "./src/routes/person.routes.js";
-import { taskRouter } from "./src/routes/task.routes.js";
-import { userRouter } from "./src/routes/user.routes.js";
-
-import "dotenv/config";
+﻿import express from "express";
+import cors from "cors";
 import cookieParser from "cookie-parser";
+import "dotenv/config";
+
+import { startDB } from "./src/config/database.js";
+import apiRouter from "./src/routes/index.js";
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3000;
 
-// para que entienda el formato json
+// Middlewares globales básicos
+app.use(
+  cors({
+    origin: true,
+    credentials: true,
+  })
+);
 app.use(express.json());
+app.use(cookieParser());
 
-app.use(cookieParser()); //  para leer req.cookies
+// Rutas principales de la API
+app.use("/api", apiRouter);
 
-//configuracion de las rutas
-app.use("/api", userRouter);
-app.use("/api", taskRouter);
-app.use("/api", personRouter);
-app.use("/api", authRouter);
+// Manejador para rutas no encontradas (404 Not Found)
+app.use((req, res) => {
+  res.status(404).json({
+    message: "Ruta no encontrada en el servidor",
+  });
+});
 
+// Inicio del servidor y conexión con la base de datos
 app.listen(PORT, async () => {
   await startDB();
-  console.log(`Servidor corriendo en el puerto ${PORT}`);
+  console.log(`Servidor corriendo exitosamente en el puerto ${PORT}`);
 });
+
+export { app, startDB };
+export default app;
