@@ -1,5 +1,8 @@
 import express from "express";
 import { startDB } from "./src/config/data.base.js";
+import {TaskModel} from "./src/models/task.model.js";
+import {UserRoleModel} from"./src/models/user_role.model.js";
+
 
 
 
