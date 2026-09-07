@@ -1,48 +1,61 @@
-import { DataTypes } from "sequelize";
-import { sequelize } from "../config/data.base.js";
-import { PersonModel } from "./person.model.js";
+﻿import { DataTypes, Model } from "sequelize";
+import { sequelize } from "../config/database.js";
 
-export const UserModel = sequelize.define(
-  "User",
+export class User extends Model {}
+
+User.init(
   {
-    // Model attributes are defined here
-    name: {
-      type: DataTypes.STRING(100),
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    username: {
+      type: DataTypes.STRING(20),
       allowNull: false,
+      unique: true,
+      validate: {
+        len: [3, 20],
+      },
     },
     email: {
       type: DataTypes.STRING(100),
       allowNull: false,
       unique: true,
+      validate: {
+        isEmail: true,
+      },
     },
     password: {
-      type: DataTypes.STRING(100),
+      type: DataTypes.STRING(255),
       allowNull: false,
     },
-    person_id: {
-      type: DataTypes.INTEGER,
+    role: {
+      type: DataTypes.ENUM("user", "admin"),
       allowNull: false,
-      unique: true,
-      references: {
-        model: "People",
-        key: "id",
-      },
+      defaultValue: "user",
+    },
+    created_at: {
+      type: DataTypes.DATE,
+    },
+    updated_at: {
+      type: DataTypes.DATE,
+    },
+    deleted_at: {
+      type: DataTypes.DATE,
     },
   },
   {
-    // Other model options go here
-    // createdAt: "created_at",
-    // updatedAt: false,
-    timestamps: false,
-  },
+    sequelize,
+    modelName: "User",
+    tableName: "users",
+    timestamps: true,
+    paranoid: true,
+    createdAt: "created_at",
+    updatedAt: "updated_at",
+    deletedAt: "deleted_at",
+  }
 );
 
-// relaciones
-// relacion uno a uno
-UserModel.belongsTo(PersonModel, {
-  foreignKey: "person_id",
-  as: "owner",
-  // onDelete: "CASCADE",
-});
-
-PersonModel.hasOne(UserModel, { foreignKey: "person_id", as: "user" });
+export const UserModel = User;
+export default User;
