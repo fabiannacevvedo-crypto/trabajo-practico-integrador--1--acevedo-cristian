@@ -6,7 +6,7 @@ import { RoleModel } from "./role.model.js";
 export const UserRoleModel = sequelize.define(
   "User_Role",
   {
-    
+    // Model attributes are defined here
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -16,7 +16,7 @@ export const UserRoleModel = sequelize.define(
     },
   },
   {
-    // Other model options
+    // Other model options go here
     // createdAt: "created_at",
     // updatedAt: false,
     timestamps: false,

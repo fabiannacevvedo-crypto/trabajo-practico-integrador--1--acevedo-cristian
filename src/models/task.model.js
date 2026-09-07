@@ -5,7 +5,7 @@ import { UserModel } from "./user.model.js";
 export const TaskModel = sequelize.define(
   "Task",
   {
-   
+    // Model attributes are defined here
     title: {
       type: DataTypes.STRING(100),
       unique: true,
@@ -29,7 +29,7 @@ export const TaskModel = sequelize.define(
     },
   },
   {
-    // Other model options 
+    // Other model options go here
     // createdAt: "created_at",
     // updatedAt: false,
     timestamps: false,
@@ -38,6 +38,10 @@ export const TaskModel = sequelize.define(
 
 // relaciones
 // relacion uno a muchos
-TaskModel.belongsTo(UserModel, { foreignKey: "user_id", as: "author" });
+TaskModel.belongsTo(UserModel, {
+  foreignKey: "user_id",
+  as: "author",
+  // onDelete: "CASCADE",
+});
 
 UserModel.hasMany(TaskModel, { foreignKey: "user_id", as: "tareas" });

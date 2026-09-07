@@ -5,7 +5,7 @@ import { PersonModel } from "./person.model.js";
 export const UserModel = sequelize.define(
   "User",
   {
-   
+    // Model attributes are defined here
     name: {
       type: DataTypes.STRING(100),
       allowNull: false,
@@ -30,7 +30,7 @@ export const UserModel = sequelize.define(
     },
   },
   {
-    // Other model options
+    // Other model options go here
     // createdAt: "created_at",
     // updatedAt: false,
     timestamps: false,
@@ -39,6 +39,10 @@ export const UserModel = sequelize.define(
 
 // relaciones
 // relacion uno a uno
-UserModel.belongsTo(PersonModel, { foreignKey: "person_id", as: "owner" });
+UserModel.belongsTo(PersonModel, {
+  foreignKey: "person_id",
+  as: "owner",
+  // onDelete: "CASCADE",
+});
 
 PersonModel.hasOne(UserModel, { foreignKey: "person_id", as: "user" });
