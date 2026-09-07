@@ -1,21 +1,29 @@
-import { Router } from "express";
+﻿import { Router } from "express";
 import {
-  createUser,
-  deleteUser,
   getAllUsers,
   getUserById,
+  createUser,
   updateUser,
+  deleteUser,
 } from "../controllers/user.controller.js";
-import { validate } from "../middlewares/validate.js";
+import { authMiddleware } from "../middlewares/auth.middleware.js";
+import { adminMiddleware } from "../middlewares/admin.middleware.js";
 import {
-  createUserValidation,
-  updateUserValidation,
-} from "../middlewares/validations/user.validation.js";
+  validateIdParam,
+  validateCreateUser,
+  validateUpdateUser,
+} from "../middlewares/validators.middleware.js";
 
-export const userRouter = Router();
+const router = Router();
 
-userRouter.post("/users", createUserValidation, validate, createUser);
-userRouter.get("/users", getAllUsers);
-userRouter.get("/users/:id", getUserById);
-userRouter.put("/users/:id", updateUserValidation, validate, updateUser);
-userRouter.delete("/users/:id", deleteUser);
+// Todas las rutas de gestión de usuarios requieren autenticación y rol 'admin'
+router.use(authMiddleware, adminMiddleware);
+
+router.get("/", getAllUsers);
+router.get("/:id", validateIdParam("id"), getUserById);
+router.post("/", validateCreateUser, createUser);
+router.put("/:id", validateIdParam("id"), validateUpdateUser, updateUser);
+router.delete("/:id", validateIdParam("id"), deleteUser);
+
+export const userRouter = router;
+export default router;
