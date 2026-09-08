@@ -31,9 +31,9 @@ export const validateIdParam = (paramName = "id") => [
   handleValidationErrors,
 ];
 
-// ==========================================
+
 // Validaciones de Autenticación y Registro
-// ==========================================
+
 
 export const validateRegister = [
   body("username")
@@ -324,9 +324,9 @@ export const validateUpdateUser = [
   handleValidationErrors,
 ];
 
-// ==========================================
+
 // Validaciones de Artículos (Articles)
-// ==========================================
+
 
 export const validateCreateArticle = [
   body("title")

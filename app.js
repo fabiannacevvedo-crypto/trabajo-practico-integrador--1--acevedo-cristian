@@ -7,7 +7,7 @@ import { startDB } from "./src/config/database.js";
 import apiRouter from "./src/routes/index.js";
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
 // Middlewares globales básicos
 app.use(
